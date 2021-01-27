@@ -1,11 +1,14 @@
 /**
  * WP jQuery Lightbox
- * Version 1.4.6 - 2015-03-21
- * @author Ulf Benjaminsson (http://www.ulfben.com)
+ * Version 1.4.8.2 - 2021-01-23
+ * 
+ * @author Ulf Benjaminsson (http://www.ulfbenjaminsson.com) 
  *
  * This is a modified version of Warren Krevenkis Lightbox-port (see notice below) for use in the WP jQuery Lightbox-
  * plugin (http://wordpress.org/extend/plugins/wp-jquery-lightbox/)
  *  Modifications include:
+ *	. migrated to modern jQuery (Thanks: [Joseph Rézeau aka papijo](https://www.rezeau.org/)!) 
+ *	. improved support of Gutenberg editor's image captions (Thanks: [Joseph Rézeau aka papijo](https://www.rezeau.org/)!) 
  *	. added slideshow
  *	. added swipe-support
  *	. added "support" for WordPress admin bar.
@@ -59,20 +62,20 @@
             start(this);
             return false;
         }	
-		if(versionCompare($.fn.jquery, '1.7') > 0){			
+		if(versionCompare($.fn.jquery, '1.7') > 0){
 			return $(this).on("click", onClick);
         }else{
 			return $(this).live("click", onClick); //deprecated since 1.7
 		}				
 		function initialize() {
-            $(window).bind('orientationchange', resizeListener);
-            $(window).bind('resize', resizeListener);
+            $(window).on('orientationchange', resizeListener);
+            $(window).on('resize', resizeListener);
             $('#overlay').remove();
             $('#lightbox').remove();         
             opts.inprogress = false;
 			opts.auto = -1;
 			var txt = opts.strings;
-            var outerImage = '<div id="outerImageContainer"><div id="imageContainer"><iframe id="lightboxIframe" /><img id="lightboxImage"><div id="hoverNav"><a href="javascript://" title="' + txt.prevLinkTitle + '" id="prevLink"></a><a href="javascript://" id="nextLink" title="' + txt.nextLinkTitle + '"></a></div><div id="jqlb_loading"><a href="javascript://" id="loadingLink"><div id="jqlb_spinner"></div></a></div></div></div>';
+            var outerImage = '<div id="outerImageContainer"><div id="imageContainer"><img id="lightboxImage"><div id="hoverNav"><a href="javascript://" title="' + txt.prevLinkTitle + '" id="prevLink"></a><a href="javascript://" id="nextLink" title="' + txt.nextLinkTitle + '"></a></div><div id="jqlb_loading"><a href="javascript://" id="loadingLink"><div id="jqlb_spinner"></div></a></div></div></div>';
             var imageData = '<div id="imageDataContainer" class="clearfix"><div id="imageData"><div id="imageDetails"><span id="titleAndCaption"></span><div id="controls"><span id="numberDisplay"></span> <a id="playPause" href="#"></a> <span id="downloadLink"></span></div></div><div id="bottomNav">';
             imageData += '<a href="javascript://" id="bottomNavClose" title="' + txt.closeTitle + '"><div id="jqlb_closelabel"></div></a></div></div></div>';
             var string;
@@ -84,15 +87,15 @@
                 string = '<div id="overlay"></div><div id="lightbox">' + outerImage + imageData + '</div>';
                 $("body").append(string);
             }
-            $("#overlay").click(function () { end(); }).hide();
-            $("#lightbox").click(function () { end(); }).hide();
-            $("#loadingLink").click(function () { end(); return false; });
-            $("#bottomNavClose").click(function () { end(); return false; });
+            $("#overlay").on("click", function () { end(); }).hide();
+            $("#lightbox").on("click", function () { end(); }).hide();
+            $("#loadingLink").on("click", function () { end(); return false; });
+            $("#bottomNavClose").on("click", function () { end(); return false; });
             $('#outerImageContainer').width(opts.widthCurrent).height(opts.heightCurrent);
             $('#imageDataContainer').width(opts.widthCurrent);
             if (!opts.imageClickClose) {
-                $("#lightboxImage").click(function () { return false; });
-                $("#hoverNav").click(function () { return false; });
+                $("#lightboxImage").on("click", function () { return false; });
+                $("#hoverNav").on("click", function () { return false; });
             }			
         };	
         //allow image to reposition & scale if orientation change or resize occurs.
@@ -118,11 +121,11 @@
 			}
 			return {x:$(document).scrollLeft(), y:yScroll};            
         };
-		function start(imageLink) {           
-            var pageSize = getPageSize();            
-            var newTop = 0;
-            $("#overlay").hide().css({width: pageSize.pageWidth + 'px', height: pageSize.pageHeight + 'px', opacity: opts.overlayOpacity}).fadeIn(400);
-            var imageNum = 0;  			
+		function start(imageLink) {
+      var pageSize = getPageSize();            
+      var newTop = 0;
+      $("#overlay").hide().css({width: pageSize.pageWidth + 'px', height: pageSize.pageHeight + 'px', opacity: opts.overlayOpacity*100 + '%'}).fadeIn(400);
+      var imageNum = 0;  			
 			var images = [];
 			opts.downloads = {}; //to keep track of any custom download links		
 			$("a").each(function(){
@@ -131,35 +134,46 @@
 				}
 				var jqThis = $(this);
 				var title = opts.showTitle ? getTitle(jqThis) : '';
-				var caption = opts.showCaption ? getCaption(jqThis) : {html:'',text:''};							
-				if(opts.showTitle && title.toLowerCase() == caption.text.toLowerCase()) {
+				var caption = {html:'',text:''};
+        if (opts.showCaption) {
+          // Case if Gutenberg blocks : the caption now resides inside the <figcaption> tag.
+          var figureCaption = jqThis.parent().children('figcaption')[0];
+  				if (figureCaption !== undefined) { // Case Gutenberg blocks
+            caption.html = figureCaption.innerHTML;
+          }	else { // Case Classic blocks
+            var caption = getCaption(jqThis);
+          }
+        }
+							
+				if (opts.showTitle && title.toLowerCase() == caption.text.toLowerCase()) {
 					title = caption.html; //to keep linked captions
 					caption.html = ''; //but not duplicate the text								
-				}				
-				var s= (title != '') 				? '<span id="titleText">' + title + '</span>' 			: '';					
-				s 	+= (title != '' && caption.html)? '<br />' 												: '';
-				s 	+= (caption.html != '') 		? '<span id="captionText">' + caption.html +'</span>' 	: '';	
+				}	
+        			
+				var s = (title != '') ? '<span id="titleText">' + title + '</span>' : '';					
+				s += (title != '' && caption.html)? '<br />' : '';
+				s += (caption.html != '') ? '<span id="captionText">' + caption.html +'</span>' : '';	
 				if(opts.showDownload || jqThis.attr("data-download")){							
 					opts.downloads[images.length] = jqThis.attr("data-download"); //use length as an index. convenient since it will always be unique							
 				}						
 				images.push(new Array(this.href, s, images.length));
 			});			            
-            if (images.length > 1) {
-                for (i = 0; i < images.length; i++) {
-                    for (j = images.length - 1; j > i; j--) {
-                        if (images[i][0] == images[j][0]) {
-                            images.splice(j, 1);
-                        }
-                    }
-                }
-                while (images[imageNum][0] != imageLink.href) { imageNum++; }
-            }
-            opts.imageArray = images;
-			var scroll = getPageScroll();			
-            setLightBoxPos(scroll.y, scroll.x).show();// calculate top and left offset for the lightbox
-            changeImage(imageNum);
+      if (images.length > 1) {
+          for (i = 0; i < images.length; i++) {
+              for (j = images.length - 1; j > i; j--) {
+                  if (images[i][0] == images[j][0]) {
+                      images.splice(j, 1);
+                  }
+              }
+          }
+          while (images[imageNum][0] != imageLink.href) { imageNum++; }
+      }
+      opts.imageArray = images;
+      var scroll = getPageScroll();			
+      setLightBoxPos(scroll.y, scroll.x).show();// calculate top and left offset for the lightbox
+      changeImage(imageNum);
 			setNav();
-        };
+    };
 		function getTitle(jqLink){						
 			var title = jqLink.attr("title") || ''; 
 			if(!title){
@@ -170,7 +184,7 @@
 					title = jqImg.attr('alt'); //if neither link nor image have a title attribute
 				}
 			}
-			return $.trim(title);
+      return title.trim();
 		}
 		function getCaption(jqLink){
 			var caption = {html:'',text:''};
@@ -182,7 +196,7 @@
 				caption.html = jqLink.next('.wp-caption-text').html();
 				caption.text = jqLink.next('.wp-caption-text').text();
 			}
-			caption.text = $.trim(caption.text).replace('&#8217;', '&#039;').replace('’', '\'').replace('…', '...');//http://nickjohnson.com/b/wordpress-apostrophe-vs-right-single-quote
+			caption.text = caption.text.trim().replace('&#8217;', '&#039;').replace('’', '\'').replace('…', '...');//http://nickjohnson.com/b/wordpress-apostrophe-vs-right-single-quote
 			return caption;			
 		}
 		function setLightBoxPos(newTop, newLeft) {        
@@ -280,20 +294,20 @@
             opts.inprogress = false;
         };
 		function showDetails(){			
-			$('#titleAndCaption').css("opacity", 1);			
+			$('#titleAndCaption').css("opacity", '100%');			
 			if(opts.showDownload){
-				$('#downloadLink').css('opacity', 1);
+				$('#downloadLink').css('opacity', '100%');
 			}					
             if(opts.showNumbers){
-				$('#numberDisplay').css('opacity', 1);
+				$('#numberDisplay').css('opacity', '100%');
 			}
 			if(opts.slidehowSpeed){
-				$('#playPause').css('opacity', 1);
+				$('#playPause').css('opacity', '100%');
 			}
 			if(opts.resizeSpeed > 0){
-				$("#imageDetails").animate({opacity: 1}, 'fast');
+				$("#imageDetails").animate({opacity: '100%'}, 'fast');
 			}else{
-				$("#imageDetails").css('opacity', 1);
+				$("#imageDetails").css('opacity', '100%');
 			}
 		}
 		function onImageVisible(){
@@ -326,26 +340,26 @@
 			var i = opts.activeImage;
 			var downloadIndex = images[i][2];            		
             var pos = (opts.showNumbers && images.length > 1) ? txt.image + (i + 1) + txt.of + images.length : '';            
-			$("#imageDetails").css("opacity", 0);					
+			$("#imageDetails").css("opacity", '100%');					
 			if(images[i][1] != ''){
-                $('#titleAndCaption').css('opacity', 0).html(images[i][1]);
+                $('#titleAndCaption').css('opacity', '100%').html(images[i][1]);
             }else{	
 				$('#titleAndCaption').empty();
 			}
 			if(opts.showNumbers){
-                $('#numberDisplay').css('opacity', 0).html(pos);
+                $('#numberDisplay').css('opacity', '100%').html(pos);
             }else{
 				$('#numberDisplay').empty();
 			}
 			if(opts.slidehowSpeed && images.length > 1){	
 				var pp = (opts.auto === -1) ? txt.play : txt.pause;
-				$('#playPause').css('opacity', 0).attr('href', '#').text(pp);				
+				$('#playPause').css('opacity', '100%').attr('href', '#').text(pp);				
 			}else{
 				$('#playPause').empty();
 			}				
 			if(opts.showDownload || opts.downloads[downloadIndex]){
 				var url = opts.downloads[downloadIndex] ? opts.downloads[downloadIndex] : images[i][0]; 				
-				$('#downloadLink').css('opacity', 0).html($('<a>').attr('href', url).attr('target', '_blank').attr('download', '').text(txt.download));
+				$('#downloadLink').css('opacity', '100%').html($('<a>').attr('href', url).attr('target', '_blank').attr('download', '').text(txt.download));
 			}else{
 				$('#downloadLink').empty();
 			}
@@ -353,10 +367,10 @@
         };	
         function setNav() {
             if (opts.imageArray.length > 1) {                
-				$('#prevLink').click(function () {
+				$('#prevLink').on("click", function () {
 					changeImage((opts.activeImage == 0) ? (opts.imageArray.length - 1) : opts.activeImage - 1); return false;
 				});
-				$('#nextLink').click(function () {
+				$('#nextLink').on("click", function () {
 					changeImage((opts.activeImage == (opts.imageArray.length - 1)) ? 0 : opts.activeImage + 1); return false;
 				});
 				if($.fn.touchwipe){
@@ -368,7 +382,7 @@
 					});
 				}
 				if(opts.slidehowSpeed){				
-					$('#playPause').unbind('click').click(function() {										
+					$('#playPause').off('click').on("click", function() {										
 						if(opts.auto != -1){
 							$(this).text(opts.strings.play);							
 							clearTimeout(opts.auto);							
@@ -408,17 +422,17 @@
         };
 						
         function enableKeyboardNav() {			
-			$(document).unbind('keydown').bind('keydown', {opts: opts}, keyboardAction);
+			$(document).off('keydown').on('keydown', {opts: opts}, keyboardAction);
         };
         function disableKeyboardNav() {
-            $(document).unbind('keydown');
+            $(document).off('keydown');
         };
     };    
     $.fn.lightbox.defaults = {
 		showCaption:false,
 		showNumbers:true,
 		adminBarHeight:0, //28
-        overlayOpacity: 0.8,
+        overlayOpacity: '80%',
         borderSize: 10,
         imageArray: new Array,
         activeImage: null,

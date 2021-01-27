@@ -1,10 +1,10 @@
-=== WP jQuery Lightbox ===
+﻿=== WP jQuery Lightbox ===
 Contributors: ulfben
-Donate link: http://flattr.com/thing/367557/Support-my-WordPress-plugins
+Donate link: https://www.amazon.com/gp/registry/wishlist/2QB6SQ5XX2U0N/105-3209188-5640446?reveal=unpurchased&filter=all&sort=priority&layout=standard&x=11&y=10
 Tags: lightbox, jquery, nodal, image, display, ulfben
-Requires at least: 3.9
-Tested up to: 5.1.1
-Stable tag: 1.4.8.1
+Requires at least: 5.0
+Tested up to: 5.6
+Stable tag: 1.4.8.3
 Requires PHP: 5.2
 License: GPLv2 or later
 
@@ -22,18 +22,29 @@ This version is also [adjusted for mobile devices](http://wordpress.org/extend/p
 * Improved scaling *maximizes* use of screen space
 * Live adjustment to the browser window and orientation of your phone
 
-See the plugin in action here: [https://game.speldesign.uu.se/](https://game.speldesign.uu.se/)
+See the plugin in action here: [game.speldesign.uu.se](https://game.speldesign.uu.se)
 
 You can browse images with your keyboard: Arrows, P(revious)/N(ext) and X/C/ESC for close.
 
 *[//Ulf Benjaminsson](http://www.ulfbenjaminsson.com)*
 
+= 1.4.8.3 (2021-01-26) = 
+* Added setting to control whether jQuery is loaded in the header or footer.
+
+= 1.4.8.2 (2021-01-26) = 
+* Migrated lightbox to modern jQuery (Thanks: [Joseph Rézeau aka papijo](https://www.rezeau.org/)!) 
+* Improved support of Gutenberg editor's image captions (Thanks: [Joseph Rézeau aka papijo](https://www.rezeau.org/)!) 
+* Tested up to WordPress 5.6 and PHP 7.4.12 
+
+
 = 1.4.8.1 (2019-03-24) =
 * Tested for WordPress 5.x and PHP 7.x, no functional changes.
+
 
 = 1.4.8 (2015-12-31) =
 * Fixed translations not being loaded properly
 * Fixed support for WordPress 4.4 
+
 
 = 1.4.7 (2015-09-21) =
 * Support for WordPress' new translation system.
@@ -153,6 +164,14 @@ Lastly:
 Still have problems? Post a link and describe what issue you're having, and tell us what of these steps you've already tried.
 
 == Changelog ==
+= 1.4.8.3 (2021-01-26) = 
+* Added setting to control whether jQuery is loaded in the header or footer.
+
+= 1.4.8.2 (2021-01-26) = 
+* Migrated lightbox to modern jQuery (Thanks: [Joseph Rézeau aka papijo](https://www.rezeau.org/)!) 
+* Improved support of Gutenberg editor's image captions (Thanks: [Joseph Rézeau aka papijo](https://www.rezeau.org/)!) 
+* Tested up to WordPress 5.6 and PHP 7.4.12 
+
 = 1.4.8.1 (2019-03-24) =
 * Tested for WordPress 5.x and PHP 7.0
 
@@ -399,7 +418,7 @@ Translations and help with implementing them would be nice. A read through and c
 And of course; [a book or two](http://www.amazon.com/gp/registry/wishlist/2QB6SQ5XX2U0N/105-3209188-5640446?reveal=unpurchased&filter=all&sort=priority&layout=standard&x) always brightens my day! (used ones are fine!) 
 
 == Additional Info ==
-Copyright (C) 2010-2019 Ulf Benjaminsson (hello at my full name dot com).
+Copyright (C) 2010-2021 Ulf Benjaminsson (hello at my full name dot com).
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

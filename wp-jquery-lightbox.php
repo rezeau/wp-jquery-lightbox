@@ -3,11 +3,12 @@
 Plugin Name: wp-jquery-lightbox
 Plugin URI: http://wordpress.org/extend/plugins/wp-jquery-lightbox/
 Description: A drop in replacement for LightBox-2 and similar plugins. Uses jQuery to save you from the JS-library mess in your header. :)
-Version: 1.4.8.1
+Version: 1.4.8.3
 Text Domain: wp-jquery-lightbox
 Author: Ulf Benjaminsson
 Author URI: http://www.ulfbenjaminsson.com
 License: GPLv2 or later
+Contact: hello at ulfbenjaminsson dot com
 
 TODO:
 Replace attribute "rel" with "data-rel" to make HTML5 valid, https://wordpress.org/support/topic/replace-attribute-rel-with-data-rel-to-make-html5-valid/?replies=3
@@ -67,6 +68,7 @@ function jqlb_register_settings(){
 	register_setting( 'jqlb-settings-group', 'jqlb_resize_speed', 'jqlb_pos_intval');
 	register_setting( 'jqlb-settings-group', 'jqlb_slideshow_speed', 'jqlb_pos_intval');		
 	register_setting( 'jqlb-settings-group', 'jqlb_use_theme_styles', 'jqlb_bool_intval');			
+	register_setting( 'jqlb-settings-group', 'jqlb_enqueue_in_footer', 'jqlb_bool_intval');
 	add_option('jqlb_showTitle', 1);
 	add_option('jqlb_showCaption', 1);
 	add_option('jqlb_showNumbers', 1);	
@@ -79,6 +81,7 @@ function jqlb_register_settings(){
 	add_option('jqlb_resize_speed', 400); 
 	add_option('jqlb_slideshow_speed', 4000); 	
 	add_option('jqlb_use_theme_styles', 0); 
+	add_option('jqlb_enqueue_in_footer', 1); 
 }
 function jqlb_register_menu_item() {		
 	add_options_page('jQuery Lightbox Options', 'jQuery Lightbox', 'manage_options', 'jquery-lightbox-options', 'jqlb_options_panel');
@@ -113,14 +116,15 @@ function jqlb_css(){
 		}
 	}	
 	$uri = ( $haveThemeCss ) ? get_stylesheet_directory_uri().'/'.$fileName : plugin_dir_url(__FILE__).'styles/'.$fileName;	
-	wp_enqueue_style('jquery.lightbox.min.css', $uri, false, '1.4.8');	
+	wp_enqueue_style('jquery.lightbox.min.css', $uri, false, '1.4.8.2');	
 }
 
 function jqlb_js() {			   	
 	if(is_admin() || is_feed()){return;}
-	wp_enqueue_script('jquery', '', array(), false, true);
-	wp_enqueue_script('wp-jquery-lightbox-swipe', plugins_url(JQLB_TOUCH_SCRIPT, __FILE__),  Array('jquery'), '1.4.8', true);	
-	wp_enqueue_script('wp-jquery-lightbox', plugins_url(JQLB_SCRIPT, __FILE__),  Array('jquery'), '1.4.8', true);
+	$enqueInFooter = get_option('jqlb_enqueue_in_footer') ? true : false;
+	wp_enqueue_script('jquery', '', array(), false, $enqueInFooter);
+	wp_enqueue_script('wp-jquery-lightbox-swipe', plugins_url(JQLB_TOUCH_SCRIPT, __FILE__),  Array('jquery'), '1.4.8.2', $enqueInFooter);	
+	wp_enqueue_script('wp-jquery-lightbox', plugins_url(JQLB_SCRIPT, __FILE__),  Array('jquery'), '1.4.8.2', $enqueInFooter);
 	wp_localize_script('wp-jquery-lightbox', 'JQLBSettings', array(
 		'showTitle'	=> get_option('jqlb_showTitle'),
 		'showCaption'	=> get_option('jqlb_showCaption'),
@@ -310,7 +314,14 @@ function jqlb_options_panel(){
 				<input type="checkbox" id="jqlb_use_theme_styles" name="jqlb_use_theme_styles" value="1" <?php echo $check; ?> />	
 				<label for="jqlb_use_theme_styles" title="You must put lightbox.min.css or lightbox.min.[locale].css in your theme's style-folder. This is good to keep your CSS edits when updating the plugin."><?php _e('Use custom stylesheet', 'wp-jquery-lightbox'); ?></label>						
 			</td>			
-		</tr>						
+		</tr>				
+		<tr valign="baseline" colspan="2">			
+			<td>
+				<?php $check = get_option('jqlb_enqueue_in_footer') ? ' checked="yes" ' : ''; ?>
+				<input type="checkbox" id="jqlb_enqueue_in_footer" name="jqlb_enqueue_in_footer" value="1" <?php echo $check; ?> />	
+				<label for="jqlb_enqueue_in_footer" title="<?php _e('Uncheck this box to load jQuery and lightbox in the header of your page.', 'wp-jquery-lightbox'); ?>"><?php _e('Load JavaScripts in page footer', 'wp-jquery-lightbox'); ?></label>						
+			</td>			
+		</tr>					
 		<tr valign="baseline" colspan="2">
 			<td colspan="2">					
 				<input type="text" id="jqlb_resize_speed" name="jqlb_resize_speed" value="<?php echo intval(get_option('jqlb_resize_speed')) ?>" size="3" />
