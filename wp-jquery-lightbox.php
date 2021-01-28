@@ -66,6 +66,7 @@ function jqlb_register_settings(){
 	register_setting( 'jqlb-settings-group', 'jqlb_resize_on_demand', 'jqlb_bool_intval');
 	register_setting( 'jqlb-settings-group', 'jqlb_showDownload', 'jqlb_bool_intval');
 	register_setting( 'jqlb-settings-group', 'jqlb_navbarOnTop', 'jqlb_bool_intval');
+  register_setting( 'jqlb-settings-group', 'jqlb_groupGalleryImages', $args);
 	register_setting( 'jqlb-settings-group', 'jqlb_margin_size', 'floatval');
 	register_setting( 'jqlb-settings-group', 'jqlb_resize_speed', 'jqlb_pos_intval');
 	register_setting( 'jqlb-settings-group', 'jqlb_slideshow_speed', 'jqlb_pos_intval');		
@@ -79,6 +80,7 @@ function jqlb_register_settings(){
 	add_option('jqlb_resize_on_demand', 0); 
 	add_option('jqlb_showDownload', 0); 
 	add_option('jqlb_navbarOnTop', 0);
+  add_option('jqlb_jqlb_groupGalleryImages', 0);
 	add_option('jqlb_margin_size', 0);
 	add_option('jqlb_resize_speed', 400); 
 	add_option('jqlb_slideshow_speed', 4000); 	
@@ -134,7 +136,8 @@ function jqlb_js() {
 		'fitToScreen' => get_option('jqlb_resize_on_demand'),
 		'resizeSpeed' => get_option('jqlb_resize_speed'),
 		'showDownload' => get_option('jqlb_showDownload'),
-		'navbarOnTop' => get_option('jqlb_navbarOnTop'),				
+		'navbarOnTop' => get_option('jqlb_navbarOnTop'),
+    'groupGalleryImages' => get_option('jqlb_groupGalleryImages'),				
 		'marginSize' => get_option('jqlb_margin_size'),		
 		'slideshowSpeed' => get_option('jqlb_slideshow_speed'),
 		/* translation */		
@@ -295,6 +298,24 @@ function jqlb_options_panel(){
           <label for="jqlb_navbarOnTop">
             <?php _e('Show image info on top', 'wp-jquery-lightbox') ?>
           </label>
+        </td>
+      </tr>
+      <tr valign="baseline" colspan="2">
+        <td colspan="2">           
+          <label for="jqlb_groupGalleryImages" 
+            title="On a page that uses the Gutenberg blocks this setting is needed to group the gallery images. If you only want to group images in SOME galleries, select the 3rd option and give your galleries an HTML anchor name.">
+            Group Gutenberg gallery images:</label>          
+          <select id="jqlb_groupGalleryImages" name="jqlb_groupGalleryImages">
+            <?php $selected = get_option('jqlb_groupGalleryImages') !== null 
+              && get_option('jqlb_groupGalleryImages') === 'never' ? 'selected' : '' ; ?>
+            <option value="never" <?php echo $selected; ?>>Never</option>
+            <?php $selected = get_option('jqlb_groupGalleryImages') !== null 
+              && get_option('jqlb_groupGalleryImages') === 'always' ? 'selected' : '' ; ?>
+            <option value="always" <?php echo $selected; ?>>Always</option>
+            <?php $selected = get_option('jqlb_groupGalleryImages') !== null 
+              && get_option('jqlb_groupGalleryImages') === 'id' ? 'selected' : '' ; ?>
+            <option value="id" <?php echo $selected; ?>>Use the Gallery anchor</option>
+          </select>
         </td>
       </tr>
       <tr valign="baseline" colspan="2">

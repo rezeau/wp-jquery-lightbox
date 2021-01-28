@@ -129,9 +129,8 @@
 			var images = [];
 			opts.downloads = {}; //to keep track of any custom download links
       
-      // Create image groups
-      // JR Iterate over potential <figure> tags to find out blocks-gallery-item and fooGallery and group them.
-      //if (opts.groupGalleryImages !== 'never') {        
+      // DEV papijo On pages using the Gutenberg blocks, iterate over potential <figure> tags to find out blocks-gallery-item and fooGallery and group them.
+      if (opts.groupGalleryImages) {        
         var prefix = '';
         var suffix = '';
         $("figure").each(function(index) {
@@ -145,17 +144,18 @@
           
           // Case of gutenberg wp-block-gallery. We need to add a suffix to the rel "lightbox" tag.
           if (jqThis.hasClass("wp-block-gallery")) {
-            if (jqThis.attr("id")) {
+            prefix = '';
+            if (opts.groupGalleryImages == 'id' && jqThis.attr("id")) {
               prefix = jqThis.attr("id");
-            } else {
+              return;
+            } else if (opts.groupGalleryImages == 'always' ) {
               prefix = index;
-            }
+            } 
             return;
           }       
           
-          if (jqThis.parent().hasClass("blocks-gallery-item")) {
+          if (jqThis.parent().hasClass("blocks-gallery-item") && prefix !== '') {
             suffix = "wp-block-gallery";
-            console.log ('156 suffix = ' + suffix);          
             // Check if wp-block-gallery suffix already added by previous call to jquery.lightbox on current page.
             if (!lightboxID.endsWith(suffix)) {
               $(links[0]).attr('rel', lightboxID + '-' + prefix + '-' + suffix);
@@ -163,7 +163,7 @@
             return;
           }
           
-          // Case of Foogallery
+          // Case of Foogallery: if FooGallery is installed on this site...
           if (jqThis.hasClass("fg-item-inner")) {
             prefix = jqThis.parent().parent().attr("id") 
             var suffix = "foo-gallery";          
@@ -174,8 +174,7 @@
             return;
           };      
         });
-      //}
-
+      };
       		
 			$("a").each(function(){
 				if(!this.href || (this.rel != imageLink.rel)) {
@@ -526,7 +525,9 @@ function doLightBox(){
 		resizeSpeed: (haveConf && rs >= 0) ? rs : 400,
 		slidehowSpeed: (haveConf && ss >= 0) ? ss : 4000,
 		showDownload: (haveConf && JQLBSettings.showDownload == '0') ? false : true,
-		navbarOnTop: (haveConf && JQLBSettings.navbarOnTop == '0') ? false : true,		
+		navbarOnTop: (haveConf && JQLBSettings.navbarOnTop == '0') ? false : true,
+    groupGalleryImages: (haveConf && JQLBSettings.groupGalleryImages == 'never') ? false : JQLBSettings.groupGalleryImages,
+    //groupGalleryImages: JQLBSettings.groupGalleryImages,		
 		strings: (haveConf && typeof JQLBSettings.prevLinkTitle == 'string') ? JQLBSettings : default_strings
 	});	
 }
