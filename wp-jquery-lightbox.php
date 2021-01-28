@@ -26,7 +26,9 @@ function jqlb_init() {
 	//JQLB_URL = plugin_dir_url(__FILE__);
 	//JQLB_STYLES_URL = plugin_dir_url(__FILE__).'styles/'
 	//JQLB_LANGUAGES_DIR = plugin_dir_path(__FILE__) . 'languages/'
-	define('JQLB_SCRIPT', 'jquery.lightbox.min.js'); 
+	// DEV use the non-minified js
+  //define('JQLB_SCRIPT', 'jquery.lightbox.min.js');
+  define('JQLB_SCRIPT', 'jquery.lightbox.js'); 
 	define('JQLB_TOUCH_SCRIPT', 'jquery.touchwipe.min.js');
 	load_plugin_textdomain('wp-jquery-lightbox', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');	
 	add_action('admin_init', 'jqlb_register_settings');

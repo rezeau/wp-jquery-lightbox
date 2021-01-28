@@ -127,7 +127,56 @@
       $("#overlay").hide().css({width: pageSize.pageWidth + 'px', height: pageSize.pageHeight + 'px', opacity: opts.overlayOpacity*100 + '%'}).fadeIn(400);
       var imageNum = 0;  			
 			var images = [];
-			opts.downloads = {}; //to keep track of any custom download links		
+			opts.downloads = {}; //to keep track of any custom download links
+      
+      // Create image groups
+      // JR Iterate over potential <figure> tags to find out blocks-gallery-item and fooGallery and group them.
+      //if (opts.groupGalleryImages !== 'never') {        
+        var prefix = '';
+        var suffix = '';
+        $("figure").each(function(index) {
+          var links = this.getElementsByTagName('a');
+          var lightboxID = $(links[0]).attr('rel'); 
+          // Case of image NOT linking to media file OR unlikely case of figure->a->image rel tag other than "lightbox".
+          if (!lightboxID || !lightboxID.startsWith("lightbox")) {            
+            return;
+          }
+          var jqThis = $(this);        
+          
+          // Case of gutenberg wp-block-gallery. We need to add a suffix to the rel "lightbox" tag.
+          if (jqThis.hasClass("wp-block-gallery")) {
+            if (jqThis.attr("id")) {
+              prefix = jqThis.attr("id");
+            } else {
+              prefix = index;
+            }
+            return;
+          }       
+          
+          if (jqThis.parent().hasClass("blocks-gallery-item")) {
+            suffix = "wp-block-gallery";
+            console.log ('156 suffix = ' + suffix);          
+            // Check if wp-block-gallery suffix already added by previous call to jquery.lightbox on current page.
+            if (!lightboxID.endsWith(suffix)) {
+              $(links[0]).attr('rel', lightboxID + '-' + prefix + '-' + suffix);
+            };          
+            return;
+          }
+          
+          // Case of Foogallery
+          if (jqThis.hasClass("fg-item-inner")) {
+            prefix = jqThis.parent().parent().attr("id") 
+            var suffix = "foo-gallery";          
+            // Check if foo-gallery suffix already added by previous call to jquery.lightbox on current page.
+            if (!lightboxID.endsWith(suffix)) {
+              $(links[0]).attr('rel', lightboxID + '-' + prefix + '-' + suffix);
+            };
+            return;
+          };      
+        });
+      //}
+
+      		
 			$("a").each(function(){
 				if(!this.href || (this.rel != imageLink.rel)) {
 					return;
