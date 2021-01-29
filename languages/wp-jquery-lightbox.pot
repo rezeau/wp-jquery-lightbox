@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wp-jQuery-lightbox\n"
+"POT-Creation-Date: 2021-01-28 19:25+0100\n"
+"PO-Revision-Date: 2021-01-28 19:26+0100\n"
+"Last-Translator: Joseph Rézeau <joseph@rezeau.org>\n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: wp-jquery-lightbox.php:256
+msgid "Let the plugin add necessary html to image links"
+msgstr ""
+
+#: wp-jquery-lightbox.php:256
+msgid "Auto-lightbox image links"
+msgstr ""
+
+#: wp-jquery-lightbox.php:263
+msgid ""
+"Note: this will disable the nofollow-attribute of comment links, that "
+"otherwise interfere with the lightbox."
+msgstr ""
+
+#: wp-jquery-lightbox.php:263
+msgid ""
+"Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/"
+"Nofollow\">the nofollow attribute!</a>)"
+msgstr ""
+
+#: wp-jquery-lightbox.php:270
+msgid "Show title"
+msgstr ""
+
+#: wp-jquery-lightbox.php:277
+msgid "Show caption"
+msgstr ""
+
+#: wp-jquery-lightbox.php:284
+msgid "Show image numbers:"
+msgstr ""
+
+#: wp-jquery-lightbox.php:291
+msgid "Show download link"
+msgstr ""
+
+#: wp-jquery-lightbox.php:299
+msgid "Show image info on top"
+msgstr ""
+
+#: wp-jquery-lightbox.php:311
+msgid "Never"
+msgstr ""
+
+#: wp-jquery-lightbox.php:325
+msgid "Shrink large images to fit smaller screens"
+msgstr ""
+
+#: wp-jquery-lightbox.php:330
+msgid "Keep a distance between the image and the screen edges."
+msgstr ""
+
+#: wp-jquery-lightbox.php:330
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr ""
+
+#: wp-jquery-lightbox.php:338
+msgid "Use custom stylesheet"
+msgstr ""
+
+#: wp-jquery-lightbox.php:345
+msgid ""
+"Uncheck this box to load jQuery and lightbox in the header of your page."
+msgstr ""
+
+#: wp-jquery-lightbox.php:345
+msgid "Load JavaScripts in page footer"
+msgstr ""
+
+#: wp-jquery-lightbox.php:351
+msgid "Animation duration (in milliseconds) "
+msgstr ""
+
+#: wp-jquery-lightbox.php:357
+msgid "Slideshow speed (in milliseconds). 0 to disable."
+msgstr ""
+
+#: wp-jquery-lightbox.php:362
+msgid "Save Changes"
+msgstr ""

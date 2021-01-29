@@ -308,7 +308,7 @@ function jqlb_options_panel(){
           <select id="jqlb_groupGalleryImages" name="jqlb_groupGalleryImages">
             <?php $selected = get_option('jqlb_groupGalleryImages') !== null 
               && get_option('jqlb_groupGalleryImages') === 'never' ? 'selected' : '' ; ?>
-            <option value="never" <?php echo $selected; ?>>Never</option>
+            <option value="never" <?php echo $selected; ?>><?php _e('Never', 'wp-jquery-lightbox') ?></option>
             <?php $selected = get_option('jqlb_groupGalleryImages') !== null 
               && get_option('jqlb_groupGalleryImages') === 'always' ? 'selected' : '' ; ?>
             <option value="always" <?php echo $selected; ?>>Always</option>
