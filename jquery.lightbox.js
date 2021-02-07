@@ -122,6 +122,7 @@
 			return {x:$(document).scrollLeft(), y:yScroll};            
         };
 		function start(imageLink) {
+    
       var pageSize = getPageSize();            
       var newTop = 0;
       $("#overlay").hide().css({width: pageSize.pageWidth + 'px', height: pageSize.pageHeight + 'px', opacity: opts.overlayOpacity*100 + '%'}).fadeIn(400);
@@ -130,7 +131,8 @@
 			opts.downloads = {}; //to keep track of any custom download links
       
       // DEV papijo On pages using the Gutenberg blocks, iterate over potential <figure> tags to find out blocks-gallery-item and fooGallery and group them.
-      if (opts.groupGalleryImages) {        
+      if (opts.groupGalleryImages) {
+      console.log (JSON.stringify(opts, null, "  "));        
         var prefix = '';
         var suffix = '';
         $("figure").each(function(index) {
@@ -145,9 +147,9 @@
           // Case of gutenberg wp-block-gallery. We need to add a suffix to the rel "lightbox" tag.
           if (jqThis.hasClass("wp-block-gallery")) {
             prefix = '';
-            if (opts.groupGalleryImages == 'id' && jqThis.attr("id")) {
+            // If has HTML anchor (id) use it to group galleries.
+            if (jqThis.attr("id")) {
               prefix = jqThis.attr("id");
-              return;
             } else if (opts.groupGalleryImages == 'always' ) {
               prefix = index;
             } 
