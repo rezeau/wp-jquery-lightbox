@@ -132,7 +132,6 @@
       
       // DEV papijo On pages using the Gutenberg blocks, iterate over potential <figure> tags to find out blocks-gallery-item and fooGallery and group them.
       if (opts.groupGalleryImages) {
-      console.log (JSON.stringify(opts, null, "  "));        
         var prefix = '';
         var suffix = '';
         $("figure").each(function(index) {
